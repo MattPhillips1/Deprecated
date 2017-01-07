@@ -1,4 +1,5 @@
 <?php
+	// If the user is not logged in, go to the login page
 	if (!isset($_COOKIE["userID"])){
 		header('Location: login.php');
 		exit;
@@ -132,7 +133,10 @@
 				$("#trip_form").hide();
 			});
 
-			$("#")
+			$("#set_trip").submit(function(event){
+				event.preventDefault();
+				serializedData = $(this).serialize() + "&"
+			});
 
 
 			function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
