@@ -1,9 +1,10 @@
 <?php
 
-
+// Connext to local database. I will have to change this to server database on upload
 $db = mysqli_connect('localhost','root','Isthatmatt?','users')
 or die('Error connecting to MySQL server.');
 
+// Interpret the post variables and return the json that is required
 $result_json = array('password' => $_POST);
 if ($_POST["login"]){
 	$result_json = login($db);
@@ -25,6 +26,7 @@ if ($_POST["login"]){
 	$result_json = setTrip($db);
 }
 
+// Do not cache any results
 header('Cache-Control: no-cache, must-revalidate');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 
@@ -37,12 +39,13 @@ echo json_encode($result_json);
 
 
 
+// Authorise a login attempt
 function login($db){
 
+	// Check the database to see whether passwords match
 	$query = "SELECT password,id FROM users WHERE username='" . $_POST["username"] ."' OR email='" . $_POST["username"]."'";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 
-	//echo $_POST["usernameEntered"];
 	$row = mysqli_fetch_array($result);
 	if ($row['password']){
 		if ($_POST['password'] == $row['password']){
@@ -51,10 +54,12 @@ function login($db){
 			setcookie($cookie, $cookie_value, time() + (86400 * 30), "/");
 			$result_json = array('valid' => True);
 		}else{
+			// Return that the reason is invalid password
 			$result_json = array('reason' => 'password');
 		}
 	}
 	else{
+		// Return that the reason is invalid username/email
 		$result_json = array('reason' => 'username/email');
 	}
 
@@ -65,6 +70,9 @@ function login($db){
 
 }
 
+
+// Register a new user and create all databse records required
+// TODO: Make sure that the passwords/Emails and stuff match. 
 function register($db){
 	$query = "SELECT MAX(id) FROM users";
 	//return $query;
@@ -115,7 +123,8 @@ function register($db){
 	return $result_json;
 }
 
-
+// Upload a new photo to the server and store it sequentially
+// TODO: Instead of sequentia, make the storage a hash of the username/email and the sequence number?
 function addPhoto($db){
 	$imageData = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
 
@@ -210,6 +219,7 @@ function addPhoto($db){
 
 }
 
+// Remove the cookie in the browser that indicates logged in
 function logout(){
 	if (isset($_COOKIE['userID'])){
 		unset($_COOKIE['userID']);
@@ -218,6 +228,7 @@ function logout(){
 	return array("valid" => True);
 }
 
+// Delete a photo from the server
 function deletePhoto($db){
 
 	$query = "DROP TABLE photo_$_COOKIE[userID]_$_POST[button]";
@@ -230,6 +241,8 @@ function deletePhoto($db){
 	$query = "DELETE FROM dir_$dir WHERE picID=$_POST[button]";
 	$result = mysqli_query($db, $query) or die('Error querying database.????');
 
+	// Add a record of a spare spot that the next uploaded photo will fill
+	// Assumption: There will be more uploads than deletes
 	$query = "INSERT INTO deleted_slots VALUES($_POST[button])";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 
@@ -320,8 +333,7 @@ function getPhotoLikes($db, $photoID, $userID){
 */
 
 function setTrip($db){
-	$query = "UPDATE users SET trip='$_POST[trip]' WHERE id=$_COOKIE[userID]";
-	$result = mysqli_query($db, $query) or die('Error querying database.');
+	
 
 	return array("trip" => $_POST['trip']);
 
