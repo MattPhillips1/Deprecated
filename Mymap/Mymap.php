@@ -1,4 +1,5 @@
 <?php
+	// Matthew Phillips 15/12/2016
 	// If the user is not logged in, go to the login page
 	if (!isset($_COOKIE["userID"])){
 		header('Location: login.php');
@@ -14,7 +15,9 @@
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<link href="styles/main.css" rel="stylesheet"> 
 	<script>
+		// TODO: Separate the different JS scripts into individual files to clean
 		$(document).ready(function(){
+			// Get the current trip details
 			apirequest0 = $.ajax({
 				url: "api.php",
 				type: "post",
@@ -25,16 +28,18 @@
 			});
 
 			<?php
+				// Check the url to see what form to display the data in
 				if ($_GET["display"] == "Feed"){
 					echo "makePhotoRequest(1, 1, '2019-12-18 02:15:54', 3, false);";
 				}else{
+					// Default is full screen map
 					echo "$('#body_content').html(\"<canvas class=\\\"full_screen_map\\\" id=\\\"myCanvas\\\" width=500 height=500></canvas>\");";
 					echo "fillLargeCanvas();";
 				}
 			?>
 
 
-
+			// AJAX request to upload a file
 			$('#upload').submit(function(event){
 				event.preventDefault();
 
@@ -65,6 +70,7 @@
 						$('#private').prop('checked', false);
 						$('#uploadStatus').html("Uploading Complete!");
 						$('#uploadSection').hide();
+						// This is only in feed moode
 						makePhotoRequest(1, 1, '2019-12-18 09:15:54', 1, true);
 						
 					}else if(response["file"] == "invalid"){
@@ -84,7 +90,7 @@
 			});
 
 			$('#display_options').click(function(){
-				$('#options').slideToggle('fast');
+				$('#options').slideToggle('fast'); 
 			});
 
 			$('#settings_button').click(function(){
@@ -139,6 +145,7 @@
 			});
 
 
+			// Makes an AJAX request to the API, which returns the photo info
 			function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
 
 				apirequest = $.ajax({
