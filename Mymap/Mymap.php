@@ -181,6 +181,7 @@
 				});
 			}
 
+			// Fit the large map into the canvas
 			function fillLargeCanvas(){
 				canvas = document.getElementById('myCanvas');
       			context = canvas.getContext('2d');
