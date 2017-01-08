@@ -248,7 +248,6 @@ function deletePhoto($db){
 
 	//Remove the actual file from the database
 	$path = getPhotoPath($_POST["button"]);
-
 	unlink($path);
 
 
@@ -264,18 +263,21 @@ function getShownDetails($db, $id){
 	return $result_json;
 }
 
+// Add a user into the follows database of another
 function follow_user($db){
 	$query ="INSERT INTO follows_user_$_COOKIE[user] VALUES ($_POST[toFollow], CURDATE())";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	return array("valid" => $result);
 }
 
+// Delete a user from the database of another
 function unfollow_user($db){
 	$query = "DELETE FROM follows_user_$_COOKIE[user] WHERE idFollowed=$_POST[toUnfollow]";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	return array("valid" => $result);
 }
 
+// Get a list of photos and their paths etc to send back to the client
 function getPhoto($db, $photoID, $userID, $oldStamp, $numNeeded){
 	
 	$query = "SELECT * FROM photos_user_$userID WHERE stamp < '$oldStamp' ORDER BY stamp DESC LIMIT $numNeeded";
@@ -298,6 +300,7 @@ function getPhoto($db, $photoID, $userID, $oldStamp, $numNeeded){
 	return $return;
 }
 
+// Given the id of a photo, return the directory path for it
 function getPhotoPath($photoID){
 	$dir = floor($photoID/10000);
 	$fileNum = $photoID%10000;
