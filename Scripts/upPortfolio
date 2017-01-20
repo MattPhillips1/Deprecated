@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# A script that copies all currently changing entries in portfolio
 cd;
 cd bin;
 cp * ../Documents/Portfolio/Portfolio/Scripts;
