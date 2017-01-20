@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd;
+cd bin;
+cp * ../Documents/Portfolio/Portfolio/Scripts;
+cd;
+cd Documents/Portfolio/Portfolio;
+cp /var/www/html/Mymap/*.php Mymap;
+git add *;
+git commit * -m"$1";
+git push;

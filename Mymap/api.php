@@ -96,7 +96,7 @@ function register($db){
 		latitude real,
 		private boolean,
 		title varchar(255),
-		description text
+		description text,
 		)";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 
@@ -198,7 +198,7 @@ function addPhoto($db){
 		$_POST[latitude],
 		$privacy,
 		'$title',
-		'$description'
+		'$description',
 	);";
 	$result = mysqli_query($db, $query) or die('Error querying database??.');
 	
@@ -307,7 +307,22 @@ function getPhotoPath($photoID){
 	return "images/user/$dir/$fileNum";
 }
 
-/*
+// Get the number of likes and the number of comments for a certain photo
+function getPhotoStats($db, $photoID, $userID){
+	$query = "SELECT * FROM photo_$userID_$photoID";
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	$numlikes = 0;
+	$numcomments = 0;
+	while($row = mysqli_fetch_array($result)){
+		if (!$row['content']){
+			$numlikes += 1;
+		} else {
+			$numcomments += 1;
+		}
+	}
+	return array("likes" => $numlikes, "comments" => $numcomments)
+}
+
 function getPhotoLikes($db, $photoID, $userID){
 	$query = "SELECT * FROM photo_$userID_$photoID";
 	$result = mysqli_query($db, $query) or die('Error querying database.');	
@@ -340,5 +355,45 @@ function setTrip($db){
 
 	return array("trip" => $_POST['trip']);
 
+}
+
+function getPhotoInArea($db, $photoID, $userID, $oldest, $newest, $numNeeded){
+	
+	$query = "SELECT * FROM photos_user_$userID WHERE stamp > '$oldest' AND stamp < '$newest' ORDER BY stamp DESC LIMIT $numNeeded";
+	
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	$photoNum = 0;
+	while($row = mysqli_fetch_array($result)){
+	
+		$return[$photoNum]["path"] = getPhotoPath($row['photoID']);
+		$return[$photoNum]["id"] = $row['photoID'];
+		$return[$photoNum]["title"] = $row["title"];
+		$return[$photoNum]["timestamp"] = $row["stamp"];
+		$return[$photoNum]["description"] = $row["description"];
+		$return[$photoNum]["latitude"] = $row["latitude"];
+		$return[$photoNum]["longitude"] = $row["longitude"];
+		$photoNum++;
+	}
+
+	//return array("lol" => $result);
+	return $return;
+}
+
+// Return the continent of a given country
+function getContinent($db, $country){
+	$query = "SELECT continent FROM locations WHERE contry = '$country'";
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	$row = mysqli_fetch_array($result);
+	return $row['continent'];
+}
+
+// TODO
+// Need to be able to get a country from only the latitude and the londitude
+function getCountry($db, $lat, $long){
+	// Query should be find the two points that are on roughly same latitude/longitude that encase the point.
+	// The point is also in the same country as those two.
+	// May fail if taken right on the border? Not sure how accurate the data source is at the moment
+	// Inherent inaccuracy 
+	return 0;
 }
 ?>

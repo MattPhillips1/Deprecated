@@ -192,15 +192,16 @@
 
       			imageObj.onload = function() {
       				i = 1;
-      				offScreen.width = imageObj.width * 0.5;
-	      			offScreen.height = imageObj.height * 0.5;
-	      			osContext.drawImage(imageObj, 0, 0, offScreen.width, offScreen.height);
-      				while (i < 1){
+      				//offScreen.width = imageObj.width * 0.5;
+	      			//offScreen.height = imageObj.height * 0.5;
+	      			//osContext.drawImage(imageObj, 0, 0, offScreen.width, offScreen.height);
+      				while (i < 0){
 
 	      				osContext.drawImage(offScreen, 0, 0, offScreen.width * 0.5, offScreen.height * 0.5);
 	      				i += 1;
 	      			}
-        			context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
+        			//context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
+        			context.drawImage(imageObj, 0, 0);
       			};
       			imageObj.src = "images/stock/BlankMap-World-v2.png";
 			}
@@ -208,10 +209,9 @@
 	</script>
  	</head>
  	<body>
- 	<h1></h1>
- 	<div id="search">
- 		<form id="search_bar">
- 			<input type="text" name="search_text" id="search_text" placeholder="Search">
+ 	<div class="top_bar">
+ 		<form class="search_bar" id="search_bar">
+ 			<input type="text" name="search_text" id="search_text" class="entry_bar" placeholder="Search">
  			<input type="submit" name="search_button" id="search_button" style="display: none;">
  			By
  			<select>
