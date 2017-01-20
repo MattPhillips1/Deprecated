@@ -1,0 +1,97 @@
+Aalborg University, Denmark, 151 - 200 COMPSci, 76 Engineering
+Aarhus University, Denmark, 101 - 150 COMPSci, 112 Engineering
+University of Leoben, Austria, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Concordia University, Canada, 251 - 300 COMPSci, 343 Engineering
+Dalhousie University, Canada, 401 - 500 COMPSci, 9999 (nil) Engineering
+McGill University, Canada, 51 - 100 COMPSci, 67 Engineering
+Queen's University, Canada, 201 - 250 COMPSci, 228 Engineering
+University of Alberta, Canada, 101 - 150 COMPSci, 179 Engineering
+University of Toronto, Canada, 11 COMPSci, 49 Engineering
+Western University, Canada, 201 - 250 COMPSci, 256 Engineering
+Pontifical Catholic University of Chile, Chile, 101 - 150 COMPSci, 137 Engineering
+University of Zagreb, Croatia, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Ecole Centrale Group, France, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Institut National des Sciences Appliquees de Lyon (INSA) de Lyon), France, 9999 (nil) COMPSci, 331 Engineering
+Hamburg University of Applied Sciences, Germany, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Munich University of Applied Science, Germany, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Technical University of Berlin, Germany, 51 - 100 COMPSci, 47 Engineering
+Technical University of Darmstadt, Germany, 101 - 150 COMPSci, 109 Engineering
+University of Mannheim, Germany, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Universtiy of Iceland, Iceland, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University College Dublin, Ireland, 101 - 150 COMPSci, 157 Engineering
+Technion - Israel Institute of Technology, Israel, 51 - 100 COMPSci, 144 Engineering
+The Hebrew University of Jerusalem, Israel, 151 - 200 COMPSci, 302 Engineering
+Politecnico di Milano, Italy, 43 COMPSci, 24 Engineering
+University of Bologna, Italy, 51 - 100 COMPSci, 128 Engineering
+Keio University, Japan, 151 - 200 COMPSci, 196 Engineering
+Kyoto University, Japan, 51 - 100 COMPSci, 28 Engineering
+University of Malaya, Malaysia, 51 - 100 COMPSci, 54 Engineering
+Instituto Tecnologico Autonomo de Mexico, Mexico, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Tecnologico de Monterrey, Mexico, 201 - 250 COMPSci, 250 Engineering
+University of Guadalajara, Mexico, 401 - 500 COMPSci, 9999 (nil) Engineering
+Norwegian University of Science and Technology (NTNU), Norway, 151 - 200 COMPSci, 164 Engineering
+Universidad Carlos III de Madrid, Spain, 151 - 200 COMPSci, 244 Engineering
+Universidad de Navarra, Spain, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of Leon, Spain, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University Polytechnic of Valencia, Spain, 251 - 300 COMPSci, 160 Engineering
+Hanyang University, Korea, 151 - 200 COMPSci, 67 Engineering
+Korea University, Korea, 51 - 100 COMPSci, 57 Engineering
+Pusan National University, Korea, 351 - 400 COMPSci, 208 Engineering
+Seoul National University, Korea, 40 COMPSci, 15 Engineering
+Yonsei University, Korea, 101 - 150 COMPSci, 57 Engineering
+Chalmers University of Technology, Sweden, 101 - 150 COMPSci, 84 Engineering
+Lulea University of Technology, Sweden, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Lund University, Sweden, 151 - 200 COMPSci, 104 Engineering
+Royal Institute of Technology, Sweden, 51 - 100 COMPSci, 36 Engineering
+Ecole Polytechnique Federale de Lausanne, Switzerland, 18 COMPSci, 17 Engineering
+ETH Zurich, Switzerland, 8 COMPSci, 5 Engineering
+University of Lausanne, Switzerland, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Tamkang University, Taiwan, 401 - 500 COMPSci, 9999 (nil) Engineering
+Chulalongkorn University, Thailand, 201 - 250 COMPSci, 140 Engineering
+Thammasat University, Thailand, 401 - 500 COMPSci, 9999 (nil) Engineering
+Heriot-Watt University, UK, 401 - 500 COMPSci, 284 Engineering
+Lancaster University, UK, 101 - 150 COMPSci, 218 Engineering
+Newcastle University, UK, 251 - 300 COMPSci, 213 Engineering
+Swansea University, UK, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of Birmingham, UK, 101 - 150 COMPSci, 89 Engineering
+University of Edinburgh, UK, 20 COMPSci, 73 Engineering
+University of Exeter, UK, 9999 (nil) COMPSci, 345 Engineering
+University of Glasgow, UK, 51 - 100 COMPSci, 153 Engineering
+University of Leeds, UK, 251 - 300 COMPSci, 146 Engineering
+University of Nottingham, UK, 151 - 200 COMPSci, 116 Engineering
+University of Sheffield, UK, 201 - 250 COMPSci, 112 Engineering
+University of Sussex, UK, 351 - 400 COMPSci, 9999 (nil) Engineering
+University of Ulster, UK, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Alfred University, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Arizona State University, USA, 201 - 250 COMPSci, 234 Engineering
+Drexel University, USA, 401 - 500 COMPSci, 9999 (nil) Engineering
+Embry Riddle Aeronautical University - Daytona Beach Campus, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+George Washington University, USA, 351 - 400 COMPSci, 387 Engineering
+Georgia Tech, USA, 25 COMPSci, 19 Engineering
+Iowa State University, USA, 351 - 400 COMPSci, 366 Engineering
+Missouri University of Science and Technology, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Northern Arizona University, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+Pennsylvania State University, USA, 101 - 150 COMPSci, 9999 (nil) Engineering
+Purdue University, USA, 51 - 100 COMPSci, 55 Engineering
+Rensselaer Polytechnic Institute (RPI), USA, 251 - 300 COMPSci, 190 Engineering
+University of Alabama-Birmingham, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of Arizona, USA, 251 - 300 COMPSci, 273 Engineering
+University of California - Berkeley, USA, 7 COMPSci, 8 Engineering
+University of California - Davis, USA, 101 - 150 COMPSci, 116 Engineering
+University of California - Irvine, USA, 51 - 100 COMPSci, 194 Engineering
+University of California - Los Angeles, USA, 16 COMPSci, 23 Engineering
+University of California - Riverside, USA, 301 - 350 COMPSci, 358 Engineering
+University of California - San Diego, USA, 44 COMPSci, 79 Engineering
+University of California - Santa Barbara, USA, 151 - 200 COMPSci, 168 Engineering
+University of California - Santa Cruz, USA, 251 - 300 COMPSci, 9999 (nil) Engineering
+University of Colorado - Boulder, USA, 201 - 250 COMPSci, 184 Engineering
+University of Connecticut, USA, 401 - 500 COMPSci, 9999 (nil) Engineering
+University of Florida, USA, 251 - 300 COMPSci, 170 Engineering
+University of Illinois at Urbana - Champaign, USA, 30 COMPSci, 30 Engineering
+University of Kansas, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of Miami, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of North Carolina at Chapel Hill, USA, 101 - 150 COMPSci, 224 Engineering
+University of Pennsylvania, USA, 39 COMPSci, 63 Engineering
+University of San Diego, USA, 9999 (nil) COMPSci, 9999 (nil) Engineering
+University of Texas at Austin, USA, 34 COMPSci, 38 Engineering
+University of Virginia, USA, 151 - 200 COMPSci, 281 Engineering
