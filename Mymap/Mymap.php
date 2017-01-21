@@ -185,6 +185,8 @@
 			function fillLargeCanvas(){
 				canvas = document.getElementById('myCanvas');
       			context = canvas.getContext('2d');
+      			canvas.width = $(window).width() - 128;
+      			canvas.height = $(window).height() - 128;
       			imageObj = new Image();
 
       			offScreen = document.createElement('canvas');
@@ -192,19 +194,96 @@
 
       			imageObj.onload = function() {
       				i = 1;
-      				//offScreen.width = imageObj.width * 0.5;
-	      			//offScreen.height = imageObj.height * 0.5;
-	      			//osContext.drawImage(imageObj, 0, 0, offScreen.width, offScreen.height);
+      				offScreen.width = imageObj.width * 0.5;
+	      			offScreen.height = imageObj.height * 0.5;
+	      			osContext.drawImage(imageObj, 0, 0, offScreen.width, offScreen.height);
       				while (i < 0){
 
 	      				osContext.drawImage(offScreen, 0, 0, offScreen.width * 0.5, offScreen.height * 0.5);
 	      				i += 1;
 	      			}
         			//context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
-        			context.drawImage(imageObj, 0, 0);
+        			context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+        			console.log(context.getImageData(800, 300, 1,1).data);
+        			fillCountries(canvas,context);
+        			
       			};
-      			imageObj.src = "images/stock/BlankMap-World-v2.png";
+      			imageObj.src = "images/stock/Simple_world_map.png";
 			}
+
+			// Algorithm for filling in a country in the map. 
+			// Currently a bit slow. 
+			// TODO: improve performance
+			function fillCountries(canvas, context){
+				newdata = context.createImageData(1,1);
+				newdata.data[0] = 255;
+				newdata.data[1] = 128;
+				newdata.data[2] = 0;
+				newdata.data[3] = 255;
+				pixelStack = [[200, 200], [1000, 300]];
+				imageData = context.getImageData(pixelStack[0][0], pixelStack[0][1], 1, 1).data;
+				while(pixelStack.length){
+					cood = pixelStack.pop();
+					//console.log(pixelStack.length);
+					y = cood[1];
+					x = cood[0];
+					while (y >= 0 && sameColour(x, y, imageData, context)){
+						y--;
+					}
+					//console.log("found boundary");
+					//console.log(y);
+					//console.log(x);
+					y++;
+					//console.log(y);
+					addedLeft = false;
+					addedRight = false;
+
+					while (y <= canvas.height && sameColour(x, y, imageData, context)){
+						context.putImageData(newdata, x, y++);
+						
+						if (!addedRight){
+							if (sameColour(x+1, y, imageData, context)){
+								pixelStack.push([x+1, y]);
+								addedRight = true;
+							}
+						}else if(!sameColour(x+1, y, imageData, context)){
+							addedRight = false;
+						}
+						if (!addedLeft){
+							if (sameColour(x-1, y, imageData, context)){
+								pixelStack.push([x-1, y]);
+								addedLeft = true;
+							}
+						}else if(!sameColour(x-1, y, imageData, context)){
+							addedLeft = false;
+						}
+
+						
+					}
+					//console.log(y);
+
+					
+				}
+			}
+			
+			// Check if a pixel is the same colour as another next to it
+			function sameColour(initX, initY, initData, context){
+
+				checkImageData = context.getImageData(initX, initY, 1, 1).data;
+				//console.log("compare to ");
+				//console.log(initData);
+				newR = checkImageData[0];
+				newG = checkImageData[1];
+				newB = checkImageData[2];
+
+				//console.log(newR);
+				//console.log(newG);
+				//console.log(newB);
+
+
+				return(newR == initData[0] && newG == initData[1] && newB == initData[2]);
+			}
+			
 		});
 	</script>
  	</head>
