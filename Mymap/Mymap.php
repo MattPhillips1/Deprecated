@@ -218,9 +218,9 @@
 				newdata = context.createImageData(1,1);
 				newdata.data[0] = 255;
 				newdata.data[1] = 128;
-				newdata.data[2] = 0;
+				newdata.data[2] = 276;
 				newdata.data[3] = 255;
-				pixelStack = [[200, 200], [1000, 300]];
+				pixelStack = [[1000, 150]];
 				imageData = context.getImageData(pixelStack[0][0], pixelStack[0][1], 1, 1).data;
 				while(pixelStack.length){
 					cood = pixelStack.pop();
@@ -233,7 +233,7 @@
 					//console.log("found boundary");
 					//console.log(y);
 					//console.log(x);
-					y++;
+					++y;
 					//console.log(y);
 					addedLeft = false;
 					addedRight = false;
@@ -267,9 +267,9 @@
 			}
 			
 			// Check if a pixel is the same colour as another next to it
-			function sameColour(initX, initY, initData, context){
+			function sameColour(X, Y, initData, context){
 
-				checkImageData = context.getImageData(initX, initY, 1, 1).data;
+				checkImageData = context.getImageData(X, Y, 1, 1).data;
 				//console.log("compare to ");
 				//console.log(initData);
 				newR = checkImageData[0];
@@ -289,6 +289,9 @@
  	</head>
  	<body>
  	<div class="top_bar">
+ 		<span class="basic_profile">
+ 			Place Holder for info
+ 		</span>
  		<form class="search_bar" id="search_bar">
  			<input type="text" name="search_text" id="search_text" class="entry_bar" placeholder="Search">
  			<input type="submit" name="search_button" id="search_button" style="display: none;">
@@ -298,25 +301,27 @@
  				<option value="destination_search">Destination</option>
  			</select>
  		</form>
- 	</div>
  	
- 	<button id="uploadInit">Upload Photo</button>
-		 	<div id="uploadSection" style="display: none">
-			 	<form id="upload" enctype="multipart/form-data">
-			 		<input type="file" name="fileToUpload" id="fileToUpload" accept="image/jpeg, image/png">
-			 		<input type="text" name="title" id="title" placeholder="Title (optional)">
-			 		<select>
-			 			<option value="Australia">Australia</option>
-			 		</select>
-			 		<input type="radio" name="private" id="private">Private
-			 		<textarea value="description" id="description" placeholder="Description (optional)"></textarea>
-			 		<input type="submit" name="upload" id="uploadButton">
-		 		</form>
-		 		<button class="close_button" id="uploadCancel">X</button>
-		 	</div>
-		 	<div id="uploadStatus">
-		 	</div>
- 	<button id="settings_button">Settings</button>
+ 		<button id="display_options" class="menu_button">Menu</button>
+	 	<button id="uploadInit" class="menu_button">Upload Photo</button>
+	 	<button id="settings_button" class="menu_button">Settings</button>
+ 	</div>
+	 	<div id="uploadSection" style="display: none">
+		 	<form id="upload" enctype="multipart/form-data">
+		 		<input type="file" name="fileToUpload" id="fileToUpload" accept="image/jpeg, image/png">
+		 		<input type="text" name="title" id="title" placeholder="Title (optional)">
+		 		<select>
+		 			<option value="Australia">Australia</option>
+		 		</select>
+		 		<input type="radio" name="private" id="private">Private
+		 		<textarea value="description" id="description" placeholder="Description (optional)"></textarea>
+		 		<input type="submit" name="upload" id="uploadButton">
+	 		</form>
+	 		<button class="close_button" id="uploadCancel">X</button>
+	 	</div>
+	 	<div id="uploadStatus">
+	 	</div>
+ 	
 	 	<div class="options" id="settings">
 	 		<?php
 	 			$options = ['Trip', 'Follows','Privacy', 'Logout'];
@@ -325,7 +330,6 @@
 	 			}
 	 		?>
 	 	</div>
- 	<button id="display_options">Menu</button>
  	<div class="options" id="options">
  		<?php
  			$options = ['Home', 'Feed', 'Maps'];
