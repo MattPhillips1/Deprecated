@@ -5,7 +5,7 @@ cd bin;
 cp * ../Documents/Portfolio/Portfolio/Scripts;
 cd;
 cd Documents/Portfolio/Portfolio;
-cp /var/www/html/Mymap/* Mymap;
+cp /var/www/html/Mymap/*.php ymap;
 git add *;
 git commit * -m"$1";
 git push;
