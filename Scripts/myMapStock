@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd ~/Pictures;
+sudo mv $1 /var/www/html/Mymap/images/stock
