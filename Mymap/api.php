@@ -11,7 +11,7 @@ if ($_POST["login"]){
 }elseif ($_POST["register"]) {
 	$result_json = register($db);
 }elseif ($_POST["init"]){
-	$result_json = getShownDetails($db, $_COOKIE['userID']);
+	$result_json = getShownDetails($db, $_POST['id']);
 }elseif ($_POST["upload"]) {
 	$result_json = addPhoto($db);
 }elseif ($_POST["logout"]) {
@@ -24,6 +24,12 @@ if ($_POST["login"]){
 	$result_json = getPhoto($db, $_POST['photoID'], $_POST['userID'], $_POST['oldStamp'], $_POST['number']);
 }elseif ($_POST["setTrip"]) {
 	$result_json = setTrip($db);
+}elseif($_POST["search_text"]){
+	$result_json = searchDB($db, $_POST['search_text']);
+}elseif ($_POST["userToCheck"]) {
+	$result_json = isVisibleUser($db, $_POST["userToCheck"]);
+}else{
+	$result_json = array();
 }
 
 // Do not cache any results
@@ -51,7 +57,7 @@ function login($db){
 		if ($_POST['password'] == $row['password']){
 			$cookie = "userID";
 			$cookie_value = $row['id'];
-			setcookie($cookie, $cookie_value, time() + (86400 * 30), "/");
+			setcookie($cookie, $cookie_value, time() + (86400 * 30), "/", null, null, true);
 			$result_json = array('valid' => True);
 		}else{
 			// Return that the reason is invalid password
@@ -119,7 +125,7 @@ function register($db){
 	$result_json =array('success' => $result);
 	$cookie = "userID";
 	$cookie_value = $max;
-	setcookie($cookie, $cookie_value, time() + (86400 * 30), "/");
+	setcookie($cookie, $cookie_value, time() + (86400 * 30), "/", null, null, true);
 	return $result_json;
 }
 
@@ -306,7 +312,7 @@ function getPhotoPath($photoID){
 	$fileNum = $photoID%10000;
 	return "images/user/$dir/$fileNum";
 }
-
+/*
 // Get the number of likes and the number of comments for a certain photo
 function getPhotoStats($db, $photoID, $userID){
 	$query = "SELECT * FROM photo_$userID_$photoID";
@@ -322,7 +328,7 @@ function getPhotoStats($db, $photoID, $userID){
 	}
 	return array("likes" => $numlikes, "comments" => $numcomments)
 }
-
+/*
 function getPhotoLikes($db, $photoID, $userID){
 	$query = "SELECT * FROM photo_$userID_$photoID";
 	$result = mysqli_query($db, $query) or die('Error querying database.');	
@@ -349,14 +355,14 @@ function getPhotoLikes($db, $photoID, $userID){
 	return $row['username'];
 }
 */
-
+/*
 function setTrip($db){
 	
 
 	return array("trip" => $_POST['trip']);
 
 }
-
+/*
 function getPhotoInArea($db, $photoID, $userID, $oldest, $newest, $numNeeded){
 	
 	$query = "SELECT * FROM photos_user_$userID WHERE stamp > '$oldest' AND stamp < '$newest' ORDER BY stamp DESC LIMIT $numNeeded";
@@ -395,5 +401,48 @@ function getCountry($db, $lat, $long){
 	// May fail if taken right on the border? Not sure how accurate the data source is at the moment
 	// Inherent inaccuracy 
 	return 0;
+}
+*/
+
+function searchDB($db, $searchString){
+	$searchString = mysqli_real_escape_string($db, $searchString);
+	$query = "SELECT * FROM users WHERE username OR email LIKE '%$searchString%'";
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	$i = 0;
+	$users = array();
+	//return array("data" => mysqli_fetch_array($result)["id"]);
+	while ($row = mysqli_fetch_array($result) and $i < 20){
+		if ($row['private'] != 1){
+			$users[$i] = array('id' => $row["id"], 'username' => $row['username'], 'email' => $row['email']);
+			if ($row['trip'] != "N/A"){
+				$users[$i]['trip'] = $row['trip'];
+			}
+			if (isset($row['profpic'])){
+				$dir = floor($row['profpic']/10000);
+				$fileNum = $row['profpic']%10000;
+				$users[$i]['profpic'] = $dir . "/" . $fileNum;
+			}
+			$i += 1;
+		}
+	}
+
+	return $users;
+}
+
+function isVisibleUser($db, $user){
+	$user = mysqli_escape_string($db, $user);
+	$query = "SELECT private FROM users WHERE id=$user";
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	if (mysqli_num_rows($result) == 0){
+		$valid = false;
+	}else{
+		$row = mysqli_fetch_array($result);
+		if ($row[0] == 0){
+			$valid = true;
+		}else{
+			$valid = false;
+		}
+	}
+	return array("valid" => $valid);
 }
 ?>
