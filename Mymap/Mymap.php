@@ -14,11 +14,16 @@
 	<head>
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<link href="styles/main.css" rel="stylesheet"> 
+	<script src="scripts/maps.js"></script>
 	<script>
+
+	
+
 		// TODO: Separate the different JS scripts into individual files to clean
 		$(document).ready(function(){
 
 			$("#body_content").css("padding-top", $(".top_bar").outerHeight());
+			$("#body_content").css("height", $(window).height()-$(".top_bar").outerHeight());
 			// Get the current trip details
 			function getBasicInfo(id){
 				apirequest0 = $.ajax({
@@ -230,6 +235,16 @@
 				serializedData = $(this).serialize() + "&"
 			});
 
+			$('#myCanvas').on('mousedown', function(){
+				timeout = setTimeout(function() {
+					alert('lol');
+					clearTimeout(timeout);
+			}, 200);
+			}).on('mouseup mouseleave', function() {
+				clearTimeout(timeout);
+			});
+    
+
 
 			// Makes an AJAX request to the API, which returns the photo info
 			function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
@@ -268,121 +283,11 @@
 			}
 
 			// Fit the large map into the canvas
-			function fillLargeCanvas(){
-				$('#body_content').html("<div id=\"map\">\n" + 
-						"<canvas class=\"full_screen_map\" id=\"myCanvas\" width=500 height=500></canvas>\"\n" + 
-						"\"</div>\"");
-				canvas = document.getElementById('myCanvas');
-      			context = canvas.getContext('2d');
-      			canvas.width = $(window).width() - 200;
-      			canvas.height = $(window).height() - 168;
-      			imageObj = new Image();
-
-      			offScreen = document.createElement('canvas');
-      			osContext = offScreen.getContext('2d');
-
-      			imageObj.onload = function() {
-      				i = 1;
-      				offScreen.width = imageObj.width * 0.5;
-	      			offScreen.height = imageObj.height * 0.5;
-	      			osContext.drawImage(imageObj, 0, 0, offScreen.width, offScreen.height);
-      				while (i < 0){
-
-	      				osContext.drawImage(offScreen, 0, 0, offScreen.width * 0.5, offScreen.height * 0.5);
-	      				i += 1;
-	      			}
-        			//context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
-        			context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
-        			console.log(context.getImageData(800, 300, 1,1).data);
-        			fillCountries(canvas,context);
-        			
-      			};
-      			imageObj.src = "images/stock/Simple_world_map.png";
-			}
+			
 
 			
 
-			// Algorithm for filling in a country in the map. 
-			// Currently a bit slow. 
-			// TODO: improve performance
-			function fillCountries(canvas, context){
-				//newdata = context.createImageData(1,1);
-				offScreen = document.createElement('canvas');
-      			osContext = offScreen.getContext('2d');
-      			newdata = osContext.createImageData(1,1);
-				newdata.data[0] = 4;
-				newdata.data[1] = 128;
-				newdata.data[2] = 80;
-				newdata.data[3] = 255;
-				red = 4;
-				green = 128;
-				blue = 80;
-				pixelStack = [[1000, 150]];
-				imageData = context.getImageData(pixelStack[0][0], pixelStack[0][1], 1, 1).data;
-				while(pixelStack.length){
-					cood = pixelStack.pop();
-					//console.log(pixelStack.length);
-					y = cood[1];
-					
-					x = cood[0];
-					while (y >= 0 && sameColour(x, y, imageData, context)){
-						y--;
-					}
-					//console.log("found boundary");
-					//console.log(y);
-					//console.log(x);
-					yInit = ++y;
-					height = 0;
-					//console.log(y);
-					addedLeft = false;
-					addedRight = false;
-
-					while (y <= canvas.height && sameColour(x, y, imageData, context)){
-						//context.putImageData(newdata, x, y++);
-						++y;
-						height += 1;
-						if (!addedRight){
-							if (sameColour(x+1, y, imageData, context)){
-								pixelStack.push([x+1, y]);
-								addedRight = true;
-							}
-						}else if(!sameColour(x+1, y, imageData, context)){
-							addedRight = false;
-						}
-						if (!addedLeft){
-							if (sameColour(x-1, y, imageData, context)){
-								pixelStack.push([x-1, y]);
-								addedLeft = true;
-							}
-						}else if(!sameColour(x-1, y, imageData, context)){
-							addedLeft = false;
-						}
-
-						
-					}
-					
-					newdata = osContext.createImageData(1,height);
-					for (i = 0; i < newdata.data.length; ++i){
-						switch(i%4){
-							case 0:
-								newdata.data[i] = 4;
-								break;
-							case 1:
-								newdata.data[i] = 128;
-								break;
-							case 2:
-								newdata.data[i] = 80;
-								break;
-							case 3:
-								newdata.data[i] = 255;
-						}
-					}
-					//context.putImageData(newdata, x, y++)
-					context.putImageData(newdata, x, yInit);
-
-					
-				}
-			}
+			
 			/*
 
 			function fillCountriesRecursive(canvas, context){
@@ -545,36 +450,10 @@
 
 		}
 		*/
-			
-			
-			// Check if a pixel is the same colour as another next to it
-			function sameColour(X, Y, initData, context){
-
-				checkImageData = context.getImageData(X, Y, 1, 1).data;
-				//console.log("compare to ");
-				//console.log(initData);
-				newR = checkImageData[0];
-				newG = checkImageData[1];
-				newB = checkImageData[2];
-
-				//console.log(newR);
-				//console.log(newG);
-				//console.log(newB);
-
-
-				return(newR == initData[0] && newG == initData[1] && newB == initData[2]);
-			}
-
-			function dropPins(){
-				style = "style=\"position: absolute; left: 70%; top: 14%; z-index: 2;\">";
-				$("#map").append("<img src=\"images/stock/pin.png\" height=\"50\" width=\"40\" " + style);
-				style = "style=\"position: absolute; left: 50%; top: 40%; z-index: 2;\">";
-				$("#map").append("<img src=\"images/stock/pin.png\" height=\"50\" width=\"40\" " + style);
-			}
 
 			
 		});
-		
+
 
 		
 		
@@ -595,21 +474,25 @@
 	 	<button id="uploadInit" class="menu_button">Upload Photo</button>
 	 	<button id="settings_button" class="menu_button">Settings</button>
  	</div>
-	 	<div id="uploadSection" style="display: none">
+	 	<div class="upload_section" id="uploadSection" style="display: none">
+	 		<button class="close_button" id="uploadCancel">X</button>
+
 		 	<form id="upload" enctype="multipart/form-data">
 		 		<input type="file" name="fileToUpload" id="fileToUpload" accept="image/jpeg, image/png">
-		 		<input type="text" name="title" id="title" placeholder="Title (optional)">
+		 		<input type="text" class="entry_bar" name="title" id="title" placeholder="Title (optional)">
+		 		<br/>
 		 		<select>
 		 			<option value="Australia">Australia</option>
 		 		</select>
 		 		<input type="radio" name="private" id="private">Private
-		 		<textarea value="description" id="description" placeholder="Description (optional)"></textarea>
+		 		<textarea value="description" id="description" placeholder="Description (optional)" rows="20" cols="75"></textarea>
+		 		<br/>
 		 		<input type="submit" name="upload" id="uploadButton">
 	 		</form>
-	 		<button class="close_button" id="uploadCancel">X</button>
+	 		<div id="uploadStatus">
+	 		</div>
 	 	</div>
-	 	<div id="uploadStatus">
-	 	</div>
+	 	
  	
 	 	<div class="options" id="settings">
 	 		<?php
