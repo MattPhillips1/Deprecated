@@ -6,6 +6,7 @@ cp * ../Documents/Portfolio/Portfolio/Scripts;
 cd;
 cd Documents/Portfolio/Portfolio;
 cp /var/www/html/Mymap/*.php Mymap;
+cp /var/www/html/Mymap/scripts Mymap;
 cp ~/Documents/MITCOP/android/EventFinder3/app/src/main/java/mitcop/eventfinder/* EventFinder;
 git add *;
 git commit * -m"$1";
