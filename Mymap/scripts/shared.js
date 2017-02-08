@@ -1,10 +1,7 @@
 // Get the current trip details
 function getBasicInfo(id){
-	apirequest = $.ajax({
-		url: "api.php",
-		type: "post",
-		data: "init=true&id=" + id
-	}).done(function(response){
+	postVars = {'init': 'true', 'id': id};
+	makeAJAX(postVars).done(function(response){
 		console.log(response);
 		$('#profile_text').prepend(response['username'] + " " + response['trip'] + "<br/>");
 	});
@@ -12,12 +9,13 @@ function getBasicInfo(id){
 
 // Makes an AJAX request to the API, which returns the photo info
 function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
-
-	apirequest = $.ajax({
-		url: "api.php",
-		type: "post",
-		data: "photoRequest=true&photoID="+ pID + "&userID=" + uID + "&oldStamp=" + oldStamp + "&number=" + numNeeded
-	}).done(function(response){
+	postVars = [];
+	postVars['photoRequest'] = 'true';
+	postVars['photoID'] = pID;
+	postVars['userID'] = uID;
+	postVars['oldStamp'] = oldStamp;
+	postVars['numNeeded'] = numNeeded;
+	makeAJAX(postVars).done(function(response){
 
 		console.log(response);
 		
@@ -47,11 +45,11 @@ function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
 }
 
 function addFollowButton(id){
-	apirequest = $.ajax({
-		url: "api.php",
-		type: "post",
-		data: "followQuery=true&id=" + id
-	}).done(function(response){
+	postVars = [];
+	postVars["followQuery"] = "true";
+	postVars["id"] = id;
+
+	makeAJAX(postVars).done(function(response){
 		$('#profile_text').append("<button id=\"follow_button\"></button>");
 		if (response['status'] == false){
 			buttonText = "Follow";
@@ -63,7 +61,7 @@ function addFollowButton(id){
 	});
 }
 
-function makeAJAX(data){
+function makeAJAX(dynamicData){
 	return $.ajax({
 		url: 'api.php',
 		type: "post",
