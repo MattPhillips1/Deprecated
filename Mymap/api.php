@@ -28,6 +28,8 @@ if ($_POST["login"]){
 	$result_json = searchDB($db, $_POST['search_text']);
 }elseif ($_POST["userToCheck"]) {
 	$result_json = isVisibleUser($db, $_POST["userToCheck"]);
+}elseif($_POST["followQuery"]){
+	$result_json = isFollowing($db, $_COOKIE["userID"], $_POST["id"]);
 }else{
 	$result_json = array();
 }
@@ -406,24 +408,22 @@ function getCountry($db, $lat, $long){
 
 function searchDB($db, $searchString){
 	$searchString = mysqli_real_escape_string($db, $searchString);
-	$query = "SELECT * FROM users WHERE username OR email LIKE '%$searchString%'";
+	$query = "SELECT * FROM users WHERE username OR email LIKE '%$searchString%' AND private != 1";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	$i = 0;
 	$users = array();
 	//return array("data" => mysqli_fetch_array($result)["id"]);
 	while ($row = mysqli_fetch_array($result) and $i < 20){
-		if ($row['private'] != 1){
-			$users[$i] = array('id' => $row["id"], 'username' => $row['username'], 'email' => $row['email']);
-			if ($row['trip'] != "N/A"){
-				$users[$i]['trip'] = $row['trip'];
-			}
-			if (isset($row['profpic'])){
-				$dir = floor($row['profpic']/10000);
-				$fileNum = $row['profpic']%10000;
-				$users[$i]['profpic'] = $dir . "/" . $fileNum;
-			}
-			$i += 1;
+		$users[$i] = array('id' => $row["id"], 'username' => $row['username'], 'email' => $row['email']);
+		if ($row['trip'] != "N/A"){
+			$users[$i]['trip'] = $row['trip'];
 		}
+		if (isset($row['profpic'])){
+			$dir = floor($row['profpic']/10000);
+			$fileNum = $row['profpic']%10000;
+			$users[$i]['profpic'] = $dir . "/" . $fileNum;
+		}
+		$i += 1;
 	}
 
 	return $users;
@@ -444,5 +444,16 @@ function isVisibleUser($db, $user){
 		}
 	}
 	return array("valid" => $valid);
+}
+
+function isFollowing($db, $follower, $userToCheck){
+	$query = "SELECT * FROM follows_user_$follower WHERE idFollowed=$userToCheck";
+	$result = mysqli_query($db, $query) or die('Error querying databaste.');
+	if (mysqli_num_rows($result) == 0){
+		$follows = false;
+	}else{
+		$follows = true;
+	}
+	return array("status" => $follows);
 }
 ?>

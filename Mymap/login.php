@@ -24,7 +24,7 @@
 		}elseif ($result['reason'] == 'password'){
 			$reason = "Incorrect Password";
 		}else{
-			$reason = "Username/Email is not Registerd";
+			$reason = "Username/Email is not Registered";
 		}
 	}
 

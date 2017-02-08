@@ -12,10 +12,10 @@
 
 
 	<head>
-	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<link href="styles/main.css" rel="stylesheet"> 
-	<script src="scripts/maps.js"></script>
 	<script src="scripts/shared.js"></script>
+	<script src="scripts/maps.js"></script>
 	<script>
 
 	
@@ -46,17 +46,24 @@
 				return $result->valid;
 			}
 
-			
 				// Check the url to see what form to display the data in
-				
-				
+				if ($_GET['guest'] == 'true'){
+					if (!checkIfVisible($_GET['visiting'])){
+						header('Location: Mymap.php');
+						exit;
+					}else{
+						?>
+						getBasicInfo(<?php echo $_GET['visiting']?>);
+						addFollowButton(<?php echo $_GET['visiting']?>);						
+						fillLargeCanvas(<?php echo $_GET['visiting']?>);
+						dropPins();
+						<?php
+					}
 
-
-				if ($_GET["display"] == "Feed"){
-			?>
-					makePhotoRequest(1, 1, '2019-12-18 02:15:54', 3, false);
-			<?php
 				}elseif($_GET["search_button"] == "Submit"){
+					?>
+					getBasicInfo(<?php echo $_COOKIE["userID"]?>);
+					<?php
 					$url = "http://localhost/Mymap/api.php";
 					$data = array("search_text" => $_GET['search_text']);
 					$options = array(
@@ -81,241 +88,40 @@
 							
 							$html = "<div class='search_result' id='" . $user->id . "_link'><a href='Mymap.php?guest=true&visiting=" . $user->id . "' class='lol'><img src=images/" . $pic . " width='50' height='50'></a><a href='Mymap.php?guest=true&visiting=" . $user->id . "' class='lol'>" . $user->username . "</a></div>";
 							echo "$('#body_content').append(\"$html\");\n\t\t\t";
-							
-							
-
 						}	
+
 					}else{
 						?>
 						$('#body_content').html("No matches/No Search Query");
 						<?php
-					}	
-
-
-				}elseif ($_GET['guest'] == 'true') {
-					if (checkIfVisible($_GET["visiting"])){
-						echo "god";
 					}
-					if (isset($_GET["visiting"]) and checkIfVisible($_GET["visiting"])){
-						?> 
-						getBasicInfo(<?php echo $_GET["visiting"]?>);						
-						fillLargeCanvas(<?php echo $_GET['visiting']?>);
-						dropPins();
-						<?php	
-					}else{
-						?> 
-						getBasicInfo(<?php echo $_COOKIE["userID"]?>);
-						fillLargeCanvas(<?php echo $_COOKIE['userID']?>);
-						dropPins();
-						<?php
-					}
-				
-				}else{
-				?>
-					// Default is full screen map
+
+				}else{ 
+					?>
 					getBasicInfo(<?php echo $_COOKIE["userID"]?>);
-					fillLargeCanvas(<?php echo $_COOKIE['userID']?>);
-					dropPins();
-				<?php
+					<?php
+
+					switch($_GET["display"]){
+						case "Feed":
+							?>
+							makePhotoRequest(1, 1, '2019-12-18 02:15:54', 3, false);
+							<?php
+							break;
+						case "mapFeed":
+							?>
+							makePhotoRequest(1, 1, '2019-12-18 02:15:54', 3, false);
+							<?php
+							break;
+						default:
+							?>
+							// Default is full screen map
+							fillLargeCanvas(<?php echo $_COOKIE['userID']?>);
+							dropPins();
+							<?php
+					}
 				}
 			?>
-
-
-			
-
-			
-
-			
-
-			$("#Trip").click(function(){
-				$("#trip_form").show();
-				$("#settings").hide();
-			});
-
-			$("#cancel_trip").click(function(){
-				$("#trip_form").hide();
-			});
-
-			$("#set_trip").submit(function(event){
-				event.preventDefault();
-				serializedData = $(this).serialize() + "&"
-			});
-
-			
-    
-
-
-			
-
-			// Fit the large map into the canvas
-			
-
-			
-
-			
-			/*
-
-			function fillCountriesRecursive(canvas, context){
-
-			pixelStack = [[1000, 150]];
-			imageData = context.getImageData(pixelStack[0][0], pixelStack[0][1], 1, 1).data;
-			y = pixelStack[0][1];
-			x = pixelStack[0][0];
-
-			while (pixelStack.length){
-				cood = pixelStack.pop();
-				y = cood[1];
-				x = cood[0];
-
-				addedTop = false;
-				addedBottom = false;
-				addedLeft = false;
-				addedRight = false;
-
-				while (y >= 0 && sameColour(x, y, imageData, context)){
-					--y;
-				}
-				++y;
-				highest = y;
-				
-				/*
-				startY = y;
-				while (y <= canvas.height && sameColour(x, y, imageData, context)){
-					++y;
-				}
-				--y;
-				height = y - startY;
-				area = height;
-				maxArea = area;
-				
-				while (x >= 0 && sameColour(x, y, imageData, context)){
-					--x;
-					if (!addedTop){
-						if (sameColour(x, y-1, imageData, context)){
-							pixelStack.push([x, y-1]);
-							addedTop = true;
-						}
-					}else if(!sameColour(x, y-1, imageData, context)){
-							addedTop = false;
-					}
-
-				}
-				++x;
-				farLeft = x;
-				x = cood[0]
-				addedTop = false;
-				while (x <= canvas.width && sameColour(x, y, imageData, context)){
-					++x;
-					if (!addedTop){
-						if (sameColour(x, y-1, imageData, context)){
-							pixelStack.push([x, y-1]);
-							addedTop = true;
-						}
-					}else if(!sameColour(x, y-1, imageData, context)){
-						addedTop = false;
-					}
-				}
-				--x;
-				farRight = x;
-				x = cood[0];
-
-				while (y <= canvas.height && sameColour(x, y, imageData, context)){
-					++y;
-				}
-				--y;
-				lowest = y;
-
-				while (x >= 0 && sameColour(x, y, imageData, context)){
-					--x;
-					if (!addedBottom){
-						if (sameColour(x, y+1, imageData, context)){
-							pixelStack.push([x, y+1]);
-							addedBottom = true;
-						}
-					}else if(!sameColour(x, y+1, imageData, context)){
-							addedBottom = false;
-					}
-				}
-				++x;
-				if (x > farLeft){
-					farLeft = x;
-				}
-				addedBottom = false;
-				x = cood[0];
-				while (x <= canvas.width && sameColour(x, y, imageData, context)){
-					++x;
-					if (!addedBottom){
-						if (sameColour(x, y+1, imageData, context)){
-							pixelStack.push([x, y+1]);
-							addedBottom = true;
-						}
-					}else if(!sameColour(x, y+1, imageData, context)){
-							addedBottom = false;
-					}
-				}
-				--x;
-				if (x < farRight){
-					farRight = x;
-				}
-
-				
-
-				
-
-				x = farLeft;
-				while (y >= highest){
-					if (!addedLeft){
-						if (sameColour(x-1, y, imageData, context)){
-							pixelStack.push([x-1,y]);
-							addedLeft = true;
-						}
-					}else if(!sameColour(x-1, y, imageData, context)){
-						addedLeft = false;
-					}
-					--y;
-				}
-
-				x = farRight;
-				while (y <= lowest){
-					if (!addedRight){
-						if (sameColour(x+1, y, imageData, context)){
-							pixelStack.push([x+1, y]);
-							addedRight = true;
-						}else if(!sameColour(x+1, y, imageData, context)){
-							addedRight = false;
-						}
-					}
-					++y;
-				}
-
-				console.log("Left " + farLeft);
-				console.log("Right " + farRight);
-				console.log("Highest " + highest);
-				console.log("Lowest " + lowest);
-				newdata = context.createImageData(farRight - farLeft + 1, lowest - highest + 1);
-				for (i = 0; i < newdata.data.length; ++i){
-					switch(i%4){
-						case 0:
-							newdata.data[i] = 4;
-							break;
-						case 1:
-							newdata.data[i] = 128;
-							break;
-						case 2:
-							newdata.data[i] = 80;
-							break;
-						case 3:
-							newdata.data[i] = 255;
-					}
-				}
-				//context.putImageData(newdata, x, y++)
-				context.putImageData(newdata, farLeft, highest);
-			}
-
-
-		}
-		*/
-
+  
 			
 		});
 
@@ -327,8 +133,8 @@
  	<body>
  	<div class="top_bar">
  		<span id="basic_profile" class="basic_profile">
- 		<img src="images/stock/prof_pic.png" width="50" height="50">
- 			
+ 			<img src="images/stock/prof_pic.png" width="50" height="50">
+ 			<div id="profile_text"></div>
  		</span>
  		<form class="search_bar" id="search_bar" onsubmit="search()">
  			<input type="text" name="search_text" id="search_text" class="entry_bar" placeholder="Search">

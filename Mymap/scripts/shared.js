@@ -1,12 +1,12 @@
 // Get the current trip details
 function getBasicInfo(id){
-	apirequest0 = $.ajax({
+	apirequest = $.ajax({
 		url: "api.php",
 		type: "post",
 		data: "init=true&id=" + id
 	}).done(function(response){
 		console.log(response);
-		$('#basic_profile').append(response['username'] + " " + response['trip']);
+		$('#profile_text').prepend(response['username'] + " " + response['trip'] + "<br/>");
 	});
 }
 
@@ -46,6 +46,31 @@ function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
 	});
 }
 
+function addFollowButton(id){
+	apirequest = $.ajax({
+		url: "api.php",
+		type: "post",
+		data: "followQuery=true&id=" + id
+	}).done(function(response){
+		$('#profile_text').append("<button id=\"follow_button\"></button>");
+		if (response['status'] == false){
+			buttonText = "Follow";
+		}else{
+			buttonText = "Following";
+		}
+		$('#follow_button').html(buttonText);
+		$('#follow_button').attr('class', buttonText);
+	});
+}
+
+function makeAJAX(data){
+	return $.ajax({
+		url: 'api.php',
+		type: "post",
+		data: dynamicData
+	});
+}
+
 
 
 
@@ -57,94 +82,128 @@ function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
 //																				//
 //////////////////////////////////////////////////////////////////////////////////
 
-$('#uploadInit').click(function(){
-	$('#uploadSection').show();
-});
+$(document).ready(function(){
 
-$('#uploadCancel').click(function(){
-	$('#uploadSection').hide();
-});
 
-$('#display_options').click(function(){
-	$('#options').slideToggle('fast'); 
-});
-
-$('#settings_button').click(function(){
-	$('#settings').slideToggle('fast');
-});
-
-$("#logout").click(function(event){
-	event.preventDefault();
-	serializedData = "logout=true";
-	apirequest = $.ajax({
-		url: "api.php",
-		type: "post",
-		data: serializedData
-	}).done(function(response){
-		window.location = "login.php";
+	$('#uploadInit').click(function(){
+		$('#uploadSection').show();
 	});
 
-});
+	$('#uploadCancel').click(function(){
+		$('#uploadSection').hide();
+	});
 
+	$('#display_options').click(function(){
+		$('#options').slideToggle('fast'); 
+	});
 
-$("#body_content").on('click', '.deletePhoto', function() {
-				
-	item = $(this).parent();
-	line = $(this).attr('id');
-	line = line + "_br";
-	apirequest =$.ajax({
-		url: "api.php",
-		type: "post",
-		data: "deletePhoto=true&button=" + $(this).attr('id')
-	}).done(function(response){
-		console.log(response);
-		console.log(item);
-		$(item).remove();
-		$("#" + line).remove();
+	$('#settings_button').click(function(){
+		$('#settings').slideToggle('fast');
+	});
+
+	$("#logout").click(function(event){
+		event.preventDefault();
+		serializedData = "logout=true";
+		apirequest = $.ajax({
+			url: "api.php",
+			type: "post",
+			data: serializedData
+		}).done(function(response){
+			window.location = "login.php";
+		});
 
 	});
 
 
-});
+	$("#body_content").on('click', '.deletePhoto', function() {
+					
+		item = $(this).parent();
+		line = $(this).attr('id');
+		line = line + "_br";
+		apirequest =$.ajax({
+			url: "api.php",
+			type: "post",
+			data: "deletePhoto=true&button=" + $(this).attr('id')
+		}).done(function(response){
+			console.log(response);
+			console.log(item);
+			$(item).remove();
+			$("#" + line).remove();
 
-// AJAX request to upload a file
-$('#upload').submit(function(event){
-	event.preventDefault();
+		});
 
-	serializedData = $(this).serialize() + "&upload=true";
-	file = $('#fileToUpload').prop('files')[0];
-	formData = new FormData($(this)[0]);
-	formData.append('longitude', -25.2744);
-	formData.append('latitude', 133.7751);
-	formData.append('description', $('#description').val());
-	formData.append('upload', true);
-	for(var pair of formData.entries()) {
-		console.log(pair[0]+ ', '+ pair[1]); 
-	}
-	console.log(serializedData);
-	apirequest = $.ajax({
-		url: "api.php",
-		type: "post",
-		data: formData,
-		cache: false,
-    	contentType: false,
-    	processData: false
-     
-	}).done(function(response){
-		if (response["valid"]){
-			$('#title').val("");
-			$('#fileToUpload').val("");
-			$('#description').val("");
-			$('#private').prop('checked', false);
-			$('#uploadStatus').html("Uploading Complete!");
-			$('#uploadSection').hide();
-			// This is only in feed moode
-			makePhotoRequest(1, 1, '2019-12-18 09:15:54', 1, true);
-			
-		}else if(response["file"] == "invalid"){
-			$('#uploadStatus').html("Please Upload an image file only");
+
+	});
+
+	// AJAX request to upload a file
+	$('#upload').submit(function(event){
+		event.preventDefault();
+
+		serializedData = $(this).serialize() + "&upload=true";
+		file = $('#fileToUpload').prop('files')[0];
+		formData = new FormData($(this)[0]);
+		formData.append('longitude', -25.2744);
+		formData.append('latitude', 133.7751);
+		formData.append('description', $('#description').val());
+		formData.append('upload', true);
+		for(var pair of formData.entries()) {
+			console.log(pair[0]+ ', '+ pair[1]); 
 		}
-		console.log(response);
+		console.log(serializedData);
+		apirequest = $.ajax({
+			url: "api.php",
+			type: "post",
+			data: formData,
+			cache: false,
+	    	contentType: false,
+	    	processData: false
+	     
+		}).done(function(response){
+			if (response["valid"]){
+				$('#title').val("");
+				$('#fileToUpload').val("");
+				$('#description').val("");
+				$('#private').prop('checked', false);
+				$('#uploadStatus').html("Uploading Complete!");
+				$('#uploadSection').hide();
+				// This is only in feed moode
+				makePhotoRequest(1, 1, '2019-12-18 09:15:54', 1, true);
+				
+			}else if(response["file"] == "invalid"){
+				$('#uploadStatus').html("Please Upload an image file only");
+			}
+			console.log(response);
+		});
+		
 	});
-	
+
+	$("#Trip").click(function(){
+		$("#trip_form").show();
+		$("#settings").hide();
+	});
+
+	$("#cancel_trip").click(function(){
+		$("#trip_form").hide();
+	});
+
+	$("#set_trip").submit(function(event){
+		event.preventDefault();
+		serializedData = $(this).serialize() + "&";
+	});
+
+
+	$('#follow_button').click(function(){
+		//user = $('#profile_text').html();
+		//	username = user.substring(0, user.firstIndexOf('<'));
+		console.log('lololol');
+		/*apirequest = $.ajax({
+			url: "api.php",
+			type: "post",
+			data: 
+		})
+		*/
+		
+	});
+
+
 });
