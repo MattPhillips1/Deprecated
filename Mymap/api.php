@@ -30,8 +30,12 @@ if ($_POST["login"]){
 	$result_json = isVisibleUser($db, $_POST["userToCheck"]);
 }elseif($_POST["followQuery"]){
 	$result_json = isFollowing($db, $_COOKIE["userID"], $_POST["id"]);
+}elseif($_POST["newFollow"]){
+	$result_json = follow_user($db, $_POST['toFollow']);
+}elseif($_POST["stopFollow"]){
+	$result_json = unfollow_user($db, $_POST['toUnfollow']);
 }else{
-	$result_json = array();
+	$result_json = $_POST;
 }
 
 // Do not cache any results
@@ -272,15 +276,19 @@ function getShownDetails($db, $id){
 }
 
 // Add a user into the follows database of another
-function follow_user($db){
-	$query ="INSERT INTO follows_user_$_COOKIE[user] VALUES ($_POST[toFollow], CURDATE())";
+function follow_user($db, $toFollow){
+	$id = getIdFromUsername($db, $toFollow);
+	$currUser = $_COOKIE['userID'];
+	$query ="INSERT INTO follows_user_$currUser VALUES ($id, CURDATE())";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	return array("valid" => $result);
 }
 
 // Delete a user from the database of another
-function unfollow_user($db){
-	$query = "DELETE FROM follows_user_$_COOKIE[user] WHERE idFollowed=$_POST[toUnfollow]";
+function unfollow_user($db, $toUnfollow){
+	$id = getIdFromUsername($db, $toUnfollow);
+	$currUser = $_COOKIE['userID'];
+	$query = "DELETE FROM follows_user_$currUser WHERE idFollowed=$id";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	return array("valid" => $result);
 }
@@ -448,12 +456,20 @@ function isVisibleUser($db, $user){
 
 function isFollowing($db, $follower, $userToCheck){
 	$query = "SELECT * FROM follows_user_$follower WHERE idFollowed=$userToCheck";
-	$result = mysqli_query($db, $query) or die('Error querying databaste.');
+	//return array("status" => $query);
+	$result = mysqli_query($db, $query) or die('Error querying database. isFollowing');
 	if (mysqli_num_rows($result) == 0){
 		$follows = false;
 	}else{
 		$follows = true;
 	}
 	return array("status" => $follows);
+}
+
+function getIdFromUsername($db, $username){
+	$query = "SELECT id FROM users WHERE username='$username'";
+	$result = mysqli_query($db, $query) or die('Error querying database.');
+	$row = mysqli_fetch_array($result);
+	return $row['id'];
 }
 ?>

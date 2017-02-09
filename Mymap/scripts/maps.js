@@ -1,4 +1,4 @@
-function fillLargeCanvas(){
+function fillLargeCanvas(userID){
 	$('#body_content').html("<div id=\"map\">\n" + 
 			"<canvas class=\"full_screen_map\" id=\"myCanvas\"></canvas>" +
 			"</div>");
@@ -309,12 +309,13 @@ function dropPins(){
 //////////////////////////////////////////////////////////////////////////////////
 
 
-
-$('#myCanvas').on('mousedown', function(){
-	timeout = setTimeout(function() {
-		alert('lol');
+$(document).ready(function(){
+	$('#myCanvas').on('mousedown', function(){
+		timeout = setTimeout(function() {
+			alert('lol');
+			clearTimeout(timeout);
+		}, 200);
+	}).on('mouseup mouseleave', function() {
 		clearTimeout(timeout);
-	}, 200);
-}).on('mouseup mouseleave', function() {
-	clearTimeout(timeout);
+	});
 });

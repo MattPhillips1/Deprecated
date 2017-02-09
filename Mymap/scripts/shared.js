@@ -3,18 +3,13 @@ function getBasicInfo(id){
 	postVars = {'init': 'true', 'id': id};
 	makeAJAX(postVars).done(function(response){
 		console.log(response);
-		$('#profile_text').prepend(response['username'] + " " + response['trip'] + "<br/>");
+		$('#profile_text').prepend("<span id=\"username\">" + response['username'] + "</span> " + response['trip'] + "<br/>");
 	});
 }
 
 // Makes an AJAX request to the API, which returns the photo info
 function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
-	postVars = [];
-	postVars['photoRequest'] = 'true';
-	postVars['photoID'] = pID;
-	postVars['userID'] = uID;
-	postVars['oldStamp'] = oldStamp;
-	postVars['numNeeded'] = numNeeded;
+	postVars = {'photoRequest': 'true', 'photoID': pID, 'userID': uID, 'oldStamp': oldStamp, 'numNeeded': numNeeded};
 	makeAJAX(postVars).done(function(response){
 
 		console.log(response);
@@ -45,12 +40,11 @@ function makePhotoRequest(pID, uID, oldStamp, numNeeded, prepend){
 }
 
 function addFollowButton(id){
-	postVars = [];
-	postVars["followQuery"] = "true";
-	postVars["id"] = id;
+	postVars = {'followQuery': 'true', 'id': id}
 
 	makeAJAX(postVars).done(function(response){
 		$('#profile_text').append("<button id=\"follow_button\"></button>");
+		console.log(response);
 		if (response['status'] == false){
 			buttonText = "Follow";
 		}else{
@@ -190,16 +184,21 @@ $(document).ready(function(){
 	});
 
 
-	$('#follow_button').click(function(){
-		//user = $('#profile_text').html();
-		//	username = user.substring(0, user.firstIndexOf('<'));
-		console.log('lololol');
-		/*apirequest = $.ajax({
-			url: "api.php",
-			type: "post",
-			data: 
-		})
-		*/
+	$('#profile_text').on('click', '#follow_button', function(){
+		user = $('#username').text();
+		button = $('#follow_button');
+		if (button.text() == 'Follow'){
+			postVars = {'toFollow': user, 'newFollow': 'true'};
+			newText = "Following";
+		}else{
+			postVars = {'toUnfollow': user, 'stopFollow': 'true'};
+			newText = "Follow";
+		}
+		
+		makeAJAX(postVars).done(function(){
+			button.toggleClass('Following').toggleClass('Follow');
+			button.text(newText);
+		});
 		
 	});
 
