@@ -34,6 +34,8 @@ if ($_POST["login"]){
 	$result_json = follow_user($db, $_POST['toFollow']);
 }elseif($_POST["stopFollow"]){
 	$result_json = unfollow_user($db, $_POST['toUnfollow']);
+}elseif($_POST['coodRequest']){ 
+	$result_json = getMapInfo($db, $_POST['forUser']);
 }else{
 	$result_json = $_POST;
 }
@@ -108,7 +110,7 @@ function register($db){
 		latitude real,
 		private boolean,
 		title varchar(255),
-		description text,
+		description text
 		)";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 
@@ -414,6 +416,7 @@ function getCountry($db, $lat, $long){
 }
 */
 
+// TODO: Not return self. Or return self but just send to home. Or return self and send to what profile looks like to followers?
 function searchDB($db, $searchString){
 	$searchString = mysqli_real_escape_string($db, $searchString);
 	$query = "SELECT * FROM users WHERE username OR email LIKE '%$searchString%' AND private != 1";
@@ -437,6 +440,8 @@ function searchDB($db, $searchString){
 	return $users;
 }
 
+// Checks whether or not a certain user is visible to the public
+// Returns false if the user either does not exist or is set to private
 function isVisibleUser($db, $user){
 	$user = mysqli_escape_string($db, $user);
 	$query = "SELECT private FROM users WHERE id=$user";
@@ -454,9 +459,9 @@ function isVisibleUser($db, $user){
 	return array("valid" => $valid);
 }
 
+// Checks whether or not the follower is following the userToCheck
 function isFollowing($db, $follower, $userToCheck){
 	$query = "SELECT * FROM follows_user_$follower WHERE idFollowed=$userToCheck";
-	//return array("status" => $query);
 	$result = mysqli_query($db, $query) or die('Error querying database. isFollowing');
 	if (mysqli_num_rows($result) == 0){
 		$follows = false;
@@ -466,10 +471,53 @@ function isFollowing($db, $follower, $userToCheck){
 	return array("status" => $follows);
 }
 
+// Returns the user ID given a username.
+// General user function
 function getIdFromUsername($db, $username){
 	$query = "SELECT id FROM users WHERE username='$username'";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
 	$row = mysqli_fetch_array($result);
 	return $row['id'];
+}
+
+// Called when a map is needed to be filled in
+// TODO: Make it possible to specify a trip/time range for the map to be filled in for
+function getMapInfo($db, $userID){
+	$query = "SELECT latitude, longitude FROM photos_user_$userID ORDER BY stamp";
+	$result = mysqli_query($db, $query);
+	$countries = array();
+	while ($row = mysqli_fetch_array($result)){
+		$country = getCountryFromLatLong($db, $row['latitude'], $row['longitude']);
+		if (is_null($countries[$country])){
+			$countries[$country]['id'] = $row['photoID'];
+			$percentages = getcanvasPercentage($db, $country);
+			$countries[$country]['x'] = $percentages['x'];
+			$countries[$country]['y'] = $percentages['y'];
+		}
+	}
+	return $countries
+}
+
+// Uses latitude and longitude to determine the name of the country that a photo was taken in
+function getCountryFromLatLong($db, $lat, $long){
+	$query = "SELECT country FROM latLong WHERE latitude AND longitude";
+	$result = mysqli_query($db, $query) or die('Error querying database');
+	$row = mysqli_fetch_array($result);
+	return $row['country'];
+}
+
+// Returns the coordinates on the chosen map image of a country to be filled in as a percentage of the image width and height
+// Need to update the table pixelCoords if the map image is to be changed
+function getcanvasPercentage($db, $country){
+	$query = "SELECT x, y FROM pixelCoords WHERE country='$country'";
+	$result = mysqli_query($db, $query) or die('Error querying database');
+	$percentages = array();
+	$i = 0;
+	while ($row = mysqli_fetch_array($result)){
+		$percentages[$i]['x'] = $row['x'];
+		$percentages[$i]['y'] = $row['y'];
+		$i += 1;
+	}
+	return array('x' => $row['x'], 'y' => $row['y']);
 }
 ?>

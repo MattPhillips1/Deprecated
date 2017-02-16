@@ -24,7 +24,7 @@ function fillLargeCanvas(userID){
 	//context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
 	context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
 	console.log(context.getImageData(800, 300, 1,1).data);
-	fillCountries(canvas,context);
+	getPixelsAndFill(userID, canvas, context);
 	
 	};
 	imageObj.src = "images/stock/Simple_world_map.png";
@@ -33,7 +33,7 @@ function fillLargeCanvas(userID){
 // Algorithm for filling in a country in the map. 
 // Currently a bit slow. 
 // TODO: improve performance (maybe by doing squares?)
-function fillCountries(canvas, context){
+function fillCountries(canvas, context, pixelStack){
 	//newdata = context.createImageData(1,1);
 	offScreen = document.createElement('canvas');
 	osContext = offScreen.getContext('2d');
@@ -45,7 +45,6 @@ function fillCountries(canvas, context){
 	red = 4;
 	green = 128;
 	blue = 80;
-	pixelStack = [[1000, 150]];
 	imageData = context.getImageData(pixelStack[0][0], pixelStack[0][1], 1, 1).data;
 	while(pixelStack.length){
 		cood = pixelStack.pop();
@@ -137,6 +136,23 @@ function dropPins(){
 	$("#map").append("<img src=\"images/stock/pin.png\" height=\"50\" width=\"40\" " + style);
 }
 
+// Gets the percentage coordinates of where to fill in
+// Is an AJAX call so that all of the maps will fill in at roughly the same time
+// Should it fill in one at a time?
+// Probably good so that it can request and wait for the data as it fills in other maps?
+function getPixelsAndFill(userID, canvas, context){
+	postVars = {'coodRequest': 'true', 'forUser', userID};
+	makeAJAX(postVars).done(function(response){
+		pixelStack = convertPercentage(response, canvasu0);
+		fillCountries(canvas, context, pixelStack);
+	});
+}
+
+function convertPercentage(percentages, canvas){
+	for (set in percentages){
+		
+	}
+}
 /*
 
 			function fillCountriesRecursive(canvas, context){
