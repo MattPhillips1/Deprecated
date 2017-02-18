@@ -56,7 +56,7 @@
 						getBasicInfo(<?php echo $_GET['visiting']?>);
 						addFollowButton(<?php echo $_GET['visiting']?>);						
 						fillLargeCanvas(<?php echo $_GET['visiting']?>);
-						dropPins();
+						//dropPins();
 						<?php
 					}
 
@@ -116,7 +116,7 @@
 							?>
 							// Default is full screen map
 							fillLargeCanvas(<?php echo $_COOKIE['userID']?>);
-							dropPins();
+							//dropPins();
 							<?php
 					}
 				}

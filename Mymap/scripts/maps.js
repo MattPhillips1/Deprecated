@@ -1,5 +1,6 @@
 function fillLargeCanvas(userID){
-	$('#body_content').html("<div id=\"map\">\n" + 
+
+	$('#body_content').html("<div id=\"map\" style=\"display: inline-block;\">\n" + 
 			"<canvas class=\"full_screen_map\" id=\"myCanvas\"></canvas>" +
 			"</div>");
 	canvas = document.getElementById('myCanvas');
@@ -12,6 +13,7 @@ function fillLargeCanvas(userID){
 	osContext = offScreen.getContext('2d');
 
 	imageObj.onload = function() {
+
 		i = 1;
 		offScreen.width = imageObj.width * 0.5;
 		offScreen.height = imageObj.height * 0.5;
@@ -22,6 +24,7 @@ function fillLargeCanvas(userID){
 			i += 1;
 		}
 	//context.drawImage(offScreen, 0, 0, offScreen.width, offScreen.height);
+
 	context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
 	console.log(context.getImageData(800, 300, 1,1).data);
 	getPixelsAndFill(userID, canvas, context);
@@ -129,11 +132,19 @@ function sameColour(X, Y, initData, context){
 	return(newR == initData[0] && newG == initData[1] && newB == initData[2]);
 }
 
-function dropPins(){
-	style = "style=\"position: absolute; left: 70%; top: 14%; z-index: 2;\">";
+function dropPins(leftPercent, topPercent){
+	
+	canvas = $('#myCanvas');
+	console.log(canvas.offset());
+	left = canvas.width() * leftPercent/100;
+	topOffset = canvas.height() * topPercent/100;
+	console.log(topOffset);
+	console.log(left - canvas.offset()['left']);
+	left = left + canvas.offset()['left'] - 20;
+	topOffset = topOffset + canvas.offset()['top'] - 50;
+	style = "style=\"position: absolute; left: " + left +"px; top: " + topOffset + "px; z-index: 2;\">";
 	$("#map").append("<img src=\"images/stock/pin.png\" height=\"50\" width=\"40\" " + style);
-	style = "style=\"position: absolute; left: 50%; top: 40%; z-index: 2;\">";
-	$("#map").append("<img src=\"images/stock/pin.png\" height=\"50\" width=\"40\" " + style);
+	
 }
 
 // Gets the percentage coordinates of where to fill in
@@ -141,17 +152,24 @@ function dropPins(){
 // Should it fill in one at a time?
 // Probably good so that it can request and wait for the data as it fills in other maps?
 function getPixelsAndFill(userID, canvas, context){
-	postVars = {'coodRequest': 'true', 'forUser', userID};
+	postVars = {'coodRequest': 'true', 'forUser': userID};
 	makeAJAX(postVars).done(function(response){
-		pixelStack = convertPercentage(response, canvasu0);
+		pixelStack = convertPercentage(response, canvas);
+
 		fillCountries(canvas, context, pixelStack);
 	});
 }
 
 function convertPercentage(percentages, canvas){
+	pixelStack = [];
 	for (set in percentages){
-		
+		xPixel = percentages[set]['x']/100*canvas.width;
+		yPixel = percentages[set]['y']/100*canvas.height;
+		pixelStack.push([xPixel, yPixel]);
+		dropPins(percentages[set]['x'], percentages[set]['y']);
+
 	}
+	return pixelStack;
 }
 /*
 

@@ -460,6 +460,7 @@ function isVisibleUser($db, $user){
 }
 
 // Checks whether or not the follower is following the userToCheck
+
 function isFollowing($db, $follower, $userToCheck){
 	$query = "SELECT * FROM follows_user_$follower WHERE idFollowed=$userToCheck";
 	$result = mysqli_query($db, $query) or die('Error querying database. isFollowing');
@@ -473,6 +474,7 @@ function isFollowing($db, $follower, $userToCheck){
 
 // Returns the user ID given a username.
 // General user function
+
 function getIdFromUsername($db, $username){
 	$query = "SELECT id FROM users WHERE username='$username'";
 	$result = mysqli_query($db, $query) or die('Error querying database.');
@@ -484,7 +486,7 @@ function getIdFromUsername($db, $username){
 // TODO: Make it possible to specify a trip/time range for the map to be filled in for
 function getMapInfo($db, $userID){
 	$query = "SELECT latitude, longitude FROM photos_user_$userID ORDER BY stamp";
-	$result = mysqli_query($db, $query);
+	$result = mysqli_query($db, $query) or die('Error querying database');
 	$countries = array();
 	while ($row = mysqli_fetch_array($result)){
 		$country = getCountryFromLatLong($db, $row['latitude'], $row['longitude']);
@@ -495,7 +497,13 @@ function getMapInfo($db, $userID){
 			$countries[$country]['y'] = $percentages['y'];
 		}
 	}
-	return $countries
+	$countries["china"]['x'] = 78;
+	$countries["china"]['y'] = 32;
+	$countries["russia"]['x'] = 73;
+	$countries["russia"]['y'] = 16;
+	$countries["australia"]['x'] = 87;
+	$countries['australia']['y'] = 73;
+	return $countries;
 }
 
 // Uses latitude and longitude to determine the name of the country that a photo was taken in
@@ -520,4 +528,5 @@ function getcanvasPercentage($db, $country){
 	}
 	return array('x' => $row['x'], 'y' => $row['y']);
 }
+
 ?>
