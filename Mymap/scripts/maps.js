@@ -62,7 +62,7 @@ function fillCountries(canvas, context, pixelStack){
 		//console.log(y);
 		//console.log(x);
 		yInit = ++y;
-		height = 0;
+		height = 1;
 		//console.log(y);
 		addedLeft = false;
 		addedRight = false;
@@ -90,6 +90,7 @@ function fillCountries(canvas, context, pixelStack){
 
 			
 		}
+		console.log()
 		
 		newdata = osContext.createImageData(1,height);
 		for (i = 0; i < newdata.data.length; ++i){
@@ -128,18 +129,16 @@ function sameColour(X, Y, initData, context){
 	//console.log(newG);
 	//console.log(newB);
 
-
-	return(newR == initData[0] && newG == initData[1] && newB == initData[2]);
+	//return (newR == initData[0] && newG == initData[1] && newB == initData[2]);
+	return((newR <= initData[0]+20 && newR >= initData[0]-20) && (newG <= initData[1]+20 && newG >= initData[1]-20) && (newB <= initData[2]+20 && newB >= initData[2]-20));
 }
 
 function dropPins(leftPercent, topPercent){
 	
 	canvas = $('#myCanvas');
-	console.log(canvas.offset());
 	left = canvas.width() * leftPercent/100;
 	topOffset = canvas.height() * topPercent/100;
-	console.log(topOffset);
-	console.log(left - canvas.offset()['left']);
+	
 	left = left + canvas.offset()['left'] - 20;
 	topOffset = topOffset + canvas.offset()['top'] - 50;
 	style = "style=\"position: absolute; left: " + left +"px; top: " + topOffset + "px; z-index: 2;\">";
@@ -162,11 +161,13 @@ function getPixelsAndFill(userID, canvas, context){
 
 function convertPercentage(percentages, canvas){
 	pixelStack = [];
-	for (set in percentages){
-		xPixel = percentages[set]['x']/100*canvas.width;
-		yPixel = percentages[set]['y']/100*canvas.height;
+	for (country in percentages){
+		xPixel = percentages[country]['x']/100*canvas.width;
+		yPixel = percentages[country]['y']/100*canvas.height;
 		pixelStack.push([xPixel, yPixel]);
-		dropPins(percentages[set]['x'], percentages[set]['y']);
+		if (country.slice(-1) > '9' || country.slice(-1) == '0'){
+			dropPins(percentages[country]['x'], percentages[country]['y']);
+		}
 
 	}
 	return pixelStack;

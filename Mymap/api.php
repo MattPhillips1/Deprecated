@@ -493,16 +493,32 @@ function getMapInfo($db, $userID){
 		if (is_null($countries[$country])){
 			$countries[$country]['id'] = $row['photoID'];
 			$percentages = getcanvasPercentage($db, $country);
-			$countries[$country]['x'] = $percentages['x'];
-			$countries[$country]['y'] = $percentages['y'];
+			if (isset($percentages[0]['x'])){
+				for ($i=0; $i < count($percentages); $i++) { 
+					$country = $country + "$i";
+					$countries[$country]['x'] = $percentages[$i]['x'];
+					$countries[$country]['y'] = $percentages[$i]['y'];
+				}
+			}else{
+				$countries[$country]['x'] = $percentages['x'];
+				$countries[$country]['y'] = $percentages['y'];
+			}
 		}
 	}
 	$countries["china"]['x'] = 78;
-	$countries["china"]['y'] = 32;
+	$countries["china"]['y'] = 33.5;
 	$countries["russia"]['x'] = 73;
 	$countries["russia"]['y'] = 16;
 	$countries["australia"]['x'] = 87;
 	$countries['australia']['y'] = 73;
+	$countries['india']['x'] = 71.5;
+	$countries['india']['y'] = 42.5;
+	$countries['canada']['x'] = 18;
+	$countries['canada']['y'] = 18;
+	$countries['usa0']['x'] = 18;
+	$countries['usa0']['y'] = 30;
+	$countries['usa1']['x'] = 10;
+	$countries['usa1']['y'] = 14;
 	return $countries;
 }
 
@@ -526,7 +542,7 @@ function getcanvasPercentage($db, $country){
 		$percentages[$i]['y'] = $row['y'];
 		$i += 1;
 	}
-	return array('x' => $row['x'], 'y' => $row['y']);
+	return array("lol" => "haha");
 }
 
 ?>
